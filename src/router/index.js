@@ -33,6 +33,11 @@ const routes = [
     name: 'Wip',
     component: () => import('../views/Wip.vue')
   },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('../views/Settings.vue')
+  },
 ]
 
 const router = new VueRouter({
