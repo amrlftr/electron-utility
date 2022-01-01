@@ -15,7 +15,17 @@
           </div>
         </div>
       </router-link>
+      <router-link to="/query">
+        <div class="rounded-xl border border-gray-700 text-gray-700 p-4">
+          <div>
+              <p class="text-xl font-bold text-center">Query Builder</p>
+          </div>
+        </div>
+      </router-link>
       <div class="text-xs text-center">Copyright Amirul Fitri (Build ver 1.0)</div>
+      <router-link to="/wip">
+        <div class="text-xs text-center underline">Milestone / Todo</div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -28,6 +38,9 @@ export default {
   name: 'Home',
   components: {
     // HelloWorld
-  }
+  },
+	mounted() {
+		console.log(this.$store.state.menu);
+	}
 }
 </script>

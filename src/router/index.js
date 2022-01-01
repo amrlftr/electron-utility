@@ -21,10 +21,17 @@ const routes = [
   {
     path: '/mutator',
     name: 'Mutator',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Mutator.vue')
+    component: () => import('../views/Mutator.vue')
+  },
+  {
+    path: '/query',
+    name: 'Query',
+    component: () => import('../views/Query.vue')
+  },
+  {
+    path: '/wip',
+    name: 'Wip',
+    component: () => import('../views/Wip.vue')
   },
 ]
 

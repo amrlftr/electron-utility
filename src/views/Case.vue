@@ -13,13 +13,27 @@
           </div>
           <textarea rows="4" class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full mb-4" v-model="originalData"></textarea>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div @click="caseType = 'capitalize'" :class="[caseType === 'capitalize' ? 'bg-yellow-600 text-white' : 'border-2 border-yellow-600 bg-white text-yellow-600']" class="px-2 py-1 text-center cursor-pointer">CAPITALIZE</div>
-            <div @click="caseType = 'titlecase'" :class="[caseType === 'titlecase' ? 'bg-yellow-600 text-white' : 'border-2 border-yellow-600 bg-white text-yellow-600']" class="px-2 py-1 text-center cursor-pointer">Title Case</div>
-            <div @click="caseType = 'lowercase'" :class="[caseType === 'lowercase' ? 'bg-yellow-600 text-white' : 'border-2 border-yellow-600 bg-white text-yellow-600']" class="px-2 py-1 text-center cursor-pointer">lowercase</div>
+            <div 
+              v-for="(type, index) in ['capitalize', 'titlecase', 'lowercase']" 
+              :key="index" 
+              @click="caseType = type" 
+              :class="[caseType === type ? 'bg-yellow-600 text-white' : 'border-2 border-yellow-600 bg-white text-yellow-600']" 
+              class="px-2 py-1 text-center cursor-pointer"
+            >
+              {{ type }}
+            </div>
           </div>
         </div>
 
-        <div class="flex-auto border-t p-5 box-border" style="overflow-wrap: break-word;">
+        <div class="p-4 space-y-4">
+          <div class="flex flex-row items-center justify-between">
+            <span>Delimiter</span>
+            <input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700" v-model="delimiter">
+          </div>
+          <div class="flex flex-row items-center justify-between">
+            <span>Separator</span>
+            <input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700" v-model="separator">
+          </div>
           <div class="flex flex-row items-center justify-between">
             <span>Newline</span>
             <input type="checkbox" class="w-4 h-4" v-model="toggleNewline">
@@ -49,32 +63,35 @@
         originalData: '',
         toggleNewline: false,
         caseType: 'capitalize',
+        delimiter: ' ',
+        separator: ' ',
       }
     },
     methods: {
-      escapeRegExp(string) {
-          return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); //make sure that any special character is escaped
-      },
       copyToClipboard(){
         navigator.clipboard.writeText(this.mutate);
       },
-
+      capitalize(string){
+        return string.toUpperCase();
+      },
+      lowercase(string){
+        return string.toLowerCase();
+      },
+      titlecase(string){
+        return string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
+      }
     },
     computed: {
       mutate(){
         let newString = '';
-        let dataArr = this.originalData.split(' ');
+        let dataArr = this.originalData.split(this.delimiter);
 
         dataArr.forEach((string, index) => {
-          newString += 
-            (this.caseType === 'capitalize' ? string.toUpperCase() : 
-            this.caseType === 'lowercase' ? string.toLowerCase() :
-            this.caseType === 'titlecase' ? string.charAt(0).toUpperCase() + string.slice(1) : '')
-            + (this.toggleNewline ? '\n' : dataArr.length !== index+1 ? ' ' : '');
+          newString += this[this.caseType](string) + (this.toggleNewline ? '\n' : dataArr.length !== index+1 ? this.separator : '');
         })
 
         return newString;
-      }
+      },
     }
   };
 </script>

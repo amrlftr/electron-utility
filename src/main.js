@@ -15,3 +15,16 @@ Vue.use(VueTippy);
 
 Vue.component("tippy", TippyComponent);
 
+Vue.mixin({
+  mounted() {
+    if (router.history.current.path !== '/') {
+      window.addEventListener('keyup', function(event) {
+        // If ESC key was pressed, go to Home
+        if (event.keyCode === 27) {
+          router.push('/', () => {}); 
+        }
+      });
+    }
+  },
+})
+
