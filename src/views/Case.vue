@@ -6,10 +6,11 @@
     <div class="flex flex-col md:flex-row space-x-4 w-full max-w-full leading-5 text-gray-700 border-4 border-gray-800 p-6">
       <div class="w-full flex-col mb-5 text-gray-700 break-words rounded">
         <div class="p-5">
-          <div class="block pb-2">
+          <div class="pb-2 flex items-center justify-between">
             <h4 class="font-bold text-2xl">
               Data
             </h4>
+            <paste-button @pastedData="pastedData"/>
           </div>
           <div class="mb-4">
             <textarea rows="4" class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full" v-model="originalData"></textarea>
@@ -68,11 +69,13 @@
 
 <script>
   import CopyButton from '../components/CopyButton.vue';
+  import PasteButton from '../components/PasteButton.vue';
   import { debounce } from "lodash";
 
   export default {
     components: {
       CopyButton,
+      PasteButton,
     },
     data() {
       return {
@@ -94,6 +97,9 @@
       },
       titlecase(string){
         return string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
+      },
+      pastedData(string){
+        this.originalData = string;
       }
     },
     watch: {

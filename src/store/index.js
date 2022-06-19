@@ -13,6 +13,6 @@ export default new Vuex.Store({
   actions: {
     load({ commit, dispatch }){
       dispatch('settings/setMenus');
-    }
+    },
   },
 });

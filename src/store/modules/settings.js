@@ -3,23 +3,7 @@ import db from '../../datastore';
 export default {
   namespaced: true, //uncomment if want to use like this.$store.dispatch('settings/updateMenuActiveness', menu)
   state: {
-    menu: [
-      // {
-      //   name: "case",
-      //   title: "Text Case",
-      //   isActive: true,
-      // },
-      // {
-      //   name: "mutator",
-      //   title: "Duplication Mutator",
-      //   isActive: true,
-      // },
-      // {
-      //   name: "query",
-      //   title: "Query Builder",
-      //   isActive: true, 
-      // }
-    ],
+    menu: [],
   },
   mutations: {
     SET_MENU(state, menu){

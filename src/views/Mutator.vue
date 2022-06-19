@@ -42,9 +42,9 @@
       <div class="h-full md:w-1/2 text-gray-700 rounded-xl border border-gray-300 p-5 m-5">
         <div class="flex items-center justify-between">
           <div class="font-semibold">Result</div>
-          <button content="Copied" v-tippy='{ trigger : "click"}' type="button" class="bg-yellow-600 px-2 py-1 my-2 text-white text-xs uppercase tracking-widest rounded-lg" @click="copyToClipboard">Copy</button>
+          <copy-button :text="mutate"/>
         </div>
-        <prism-editor class="my-editor rounded bg-gray-800 text-gray-200" v-model="mutate" :highlight="highlighter" line-numbers></prism-editor> 
+        <prism-editor readonly class="my-editor rounded bg-gray-800 text-gray-200" v-model="mutate" :highlight="highlighter" line-numbers></prism-editor> 
       </div>
     </div>
   </div>
@@ -60,10 +60,13 @@
   import 'prismjs/components/prism-clike';
   import 'prismjs/components/prism-javascript';
   import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
+  import CopyButton from '../components/CopyButton.vue';
+  import { debounce } from "lodash";
 
   export default {
     components: {
       PrismEditor,
+      CopyButton,
     },
     data() {
       return {
@@ -72,12 +75,7 @@
         delimiter: ',',
         toggleNewline: true,
         code: `console.log({x});`,
-        templates: [
-          'console.log({x});',
-          '{x} => $request->{x},',
-          "$table->string('{x}')->nullable();",
-          "'{x}' => 'required|string',",
-        ]
+        templates: []
       }
     },
     methods: {
@@ -90,9 +88,14 @@
       changeTemplate(el){
         this.code = el.target.value;
       },
-      copyToClipboard(){
-        navigator.clipboard.writeText(this.mutate);
-      }
+    },
+    mounted() {
+      this.$db.all("SELECT * FROM mutator_template", [], (err, rows) => {
+        if(err) return console.log(err.message);
+        rows.forEach((row) => {
+          this.templates.push(row.code);
+        })
+      })
     },
     computed: {
       mutate(){
