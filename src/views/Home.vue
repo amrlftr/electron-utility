@@ -30,12 +30,9 @@ export default {
   components: {
     // HelloWorld
   },
-	// mounted() {
-	// 	console.log(this.activeMenus)
-	// },
 	computed: {
 		...mapGetters({
-			menus: 'activeMenus'
+			menus: 'settings/activeMenus'
 		})
 	}
 }

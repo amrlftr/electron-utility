@@ -10,5 +10,9 @@ export default new Vuex.Store({
   },
   state: {},
   mutations: {},
-  actions: {},
-})
+  actions: {
+    load({ commit, dispatch }){
+      dispatch('settings/setMenus');
+    }
+  },
+});

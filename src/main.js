@@ -1,9 +1,12 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
 import VueTippy, { TippyComponent } from "vue-tippy";
 import "tippy.js/themes/light.css";
-import store from './store'
+import store from './store';
+import db from './datastore';
+
+Vue.prototype.$db = db;
 
 Vue.config.productionTip = false
 

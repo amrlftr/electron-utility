@@ -39,6 +39,11 @@
           'Notepad like to hold temporary code',
           "#add $table->string('group_code')->nullable(); to duplication mutator",
           "#add '{x}' => 'required|string', to duplication mutator",
+          "add paste button in text case to paste content in clipboard",
+          "#settimeout copy",
+          "#readonly result so that user didnt keyin any input",
+          "mutator remove any string matches ie remove any mention of $request",
+          "text case exclude certain strings from being changed",
         ]
       }
     },

@@ -12,7 +12,7 @@
 						</h4>
 						<div v-for="(menu, index) in menus" :key="index" class="flex flex-1 align-top space-y-1">
 							<div class="w-4 mr-2">
-								<input :id="index" @click="setMenu(menu.name)" type="checkbox" class="w-4 h-4 mt-1.5" :checked="menu.isActive">
+								<input :id="index" @click="setMenu(menu.name)" type="checkbox" class="w-4 h-4 mt-1.5" :checked="menu.is_active">
 							</div>
 							<label :for="index">{{ menu.title }}</label>
 						</div>
@@ -24,17 +24,28 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
 	data() {
 		return {
-			menus: this.$store.state.settings.menu,
+			// menus: this.$store.state.settings.menu,
 		}
 	},
 	methods: {
 		setMenu(menuName){
 			let menu = this.menus.find((menu) => menu.name === menuName);
-			this.$store.dispatch('updateMenuActiveness', menu)
+			
+			this.$store.dispatch('settings/updateMenuActiveness', {
+				name: menu.name,
+				is_active: +(!(menu.is_active === 1)),
+			})
 		}
 	},
+	computed: {
+		...mapGetters({
+			menus: 'settings/allMenus',
+		})
+	}
 };
 </script>

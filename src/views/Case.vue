@@ -11,7 +11,10 @@
               Data
             </h4>
           </div>
-          <textarea rows="4" class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full mb-4" v-model="originalData"></textarea>
+          <div class="mb-4">
+            <textarea rows="4" class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full" v-model="originalData"></textarea>
+            <h6 class="text-xs text-right">Count: {{ originalData.length }}</h6>
+          </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div 
               v-for="(type, index) in ['capitalize', 'titlecase', 'lowercase']" 
@@ -26,6 +29,13 @@
         </div>
 
         <div class="p-4 space-y-4">
+          <div>
+            <div class="flex flex-row items-center justify-between">
+              <span>Excludes</span>
+              <input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700" v-model="excludes">
+            </div>
+            <h6 class="text-xs text-right pt-1">Separated by comma</h6>
+          </div>
           <div class="flex flex-row items-center justify-between">
             <span>Delimiter</span>
             <input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700" v-model="delimiter">
@@ -47,9 +57,9 @@
             <h4 class="text-base font-semibold xl:text-xl box-border" style="line-height: 1.2; overflow-wrap: break-word;">
               Result
             </h4>
-            <button content="Copied" v-tippy='{ trigger : "click"}' type="button" class="bg-yellow-600 px-2 py-1 my-2 text-white text-xs uppercase tracking-widest rounded-lg" @click="copyToClipboard">Copy</button>
+            <copy-button :text="mutatedData"/>
           </div>
-          <textarea rows="4" class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full mb-4" v-model="mutate"></textarea>
+          <textarea rows="4" readonly class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full mb-4" v-model="mutatedData"></textarea>
         </div>
       </div>
     </div>
@@ -57,20 +67,25 @@
 </template>
 
 <script>
+  import CopyButton from '../components/CopyButton.vue';
+  import { debounce } from "lodash";
+
   export default {
+    components: {
+      CopyButton,
+    },
     data() {
       return {
         originalData: '',
+        mutatedData: '',
         toggleNewline: false,
         caseType: 'capitalize',
+        excludes: '',
         delimiter: ' ',
         separator: ' ',
       }
     },
     methods: {
-      copyToClipboard(){
-        navigator.clipboard.writeText(this.mutate);
-      },
       capitalize(string){
         return string.toUpperCase();
       },
@@ -81,17 +96,23 @@
         return string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
       }
     },
-    computed: {
-      mutate(){
-        let newString = '';
-        let dataArr = this.originalData.split(this.delimiter);
+    watch: {
+      originalData: {
+        immediate: true,
+        handler: debounce(function (newVal) {
+          let newString = '';
+          let dataArr = newVal.split(this.delimiter);
 
-        dataArr.forEach((string, index) => {
-          newString += this[this.caseType](string) + (this.toggleNewline ? '\n' : dataArr.length !== index+1 ? this.separator : '');
-        })
+          dataArr.forEach((string, index) => {
+            newString += (this.excludes.split(',').includes(string)
+              ? string
+              : this[this.caseType](string))
+              + (this.toggleNewline ? '\n' : dataArr.length !== index+1 ? this.separator : '');
+          });
 
-        return newString;
-      },
-    }
+          this.mutatedData = newString;
+        }, 1500)
+      }
+    },
   };
 </script>
