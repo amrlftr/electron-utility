@@ -1,24 +1,34 @@
 <template>
-  <button 
+  <ut-button
     ref="tooltip"
-    content="Copied" 
+    content="Pasted" 
     v-tippy="{ trigger : 'click'}" 
-    type="button" 
-    class="bg-yellow-600 px-2 py-1 my-2 text-white text-xs uppercase tracking-widest rounded-lg" 
     @click="paste()"
     @shown="setTimeoutHide"
+    :is-disabled="isDisabled"
   >
     Paste
-  </button>
+  </ut-button>
 </template>
 
 <script>
+import UtButton from './Button';
+
 export default {
+  components: {
+    UtButton,
+  },
+  props: {
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    }
+  },
   methods: {
     paste(){
       navigator.clipboard.readText()
       .then((text) => {
-        this.$emit('pastedData', text)
+        this.$emit('onPaste', text)
       })
     },
     setTimeoutHide(el){

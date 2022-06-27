@@ -1,24 +1,32 @@
 <template>
-  <button 
+  <ut-button
     ref="tooltip"
     content="Copied" 
     v-tippy="{ trigger : 'click'}" 
-    type="button" 
-    class="bg-yellow-600 px-2 py-1 my-2 text-white text-xs uppercase tracking-widest rounded-lg" 
     @click="copyToClipboard($event)"
     @shown="setTimeoutHide"
+    :is-disabled="isDisabled"
   >
     Copy
-  </button>
+  </ut-button>
 </template>
 
 <script>
+import UtButton from './Button';
+
 export default {
   props: {
     text: {
       type: String,
       default: '',
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false,
     }
+  },
+  components: {
+    UtButton,
   },
   methods: {
     copyToClipboard(){

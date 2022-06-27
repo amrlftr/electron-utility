@@ -17,7 +17,7 @@ export default {
     setMenus({ commit }){
       let menu = [];
 
-      db.all("SELECT * FROM menu", [], (err, rows) => {
+      db.all("SELECT * FROM menus WHERE name NOT IN ('query', 'tasks')", [], (err, rows) => {
         if(err) return console.log(err.message);
         rows.forEach((row) => {
           menu.push(row);
@@ -27,7 +27,7 @@ export default {
       commit('SET_MENU', menu);
     },
     updateMenuActiveness({ commit }, menu){
-      db.run("UPDATE menu SET is_active = ? WHERE name = ?", 
+      db.run("UPDATE menus SET is_active = ? WHERE name = ?",
       [menu.is_active, menu.name], 
       (err, rows) => {
         if(err) return console.log(err.message);

@@ -11,12 +11,12 @@ const routes = [
     component: Home
   },
   {
-    path: '/case',
-    name: 'Case',
+    path: '/text',
+    name: 'Text',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Case.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Text.vue')
   },
   {
     path: '/mutator',
@@ -27,6 +27,16 @@ const routes = [
     path: '/query',
     name: 'Query',
     component: () => import('../views/Query.vue')
+  },
+  {
+    path: '/notes',
+    name: 'notes',
+    component: () => import('../views/Notes.vue')
+  },
+  {
+    path: '/tasks',
+    name: 'tasks',
+    component: () => import('../views/Tasks.vue')
   },
   {
     path: '/wip',
