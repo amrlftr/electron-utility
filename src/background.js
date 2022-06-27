@@ -35,6 +35,24 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+
+  win.on('close', function (e) {
+    e.preventDefault();
+
+    var choice = require('electron').dialog.showMessageBox(this,
+      {
+        type: 'question',
+        buttons: ['Yes', 'No'],
+        title: 'Confirm',
+        message: 'Are you sure to quit?'
+      });
+
+    choice.then(data => {
+      if(data.response == 0){
+        win.destroy()
+      }
+    });
+  });
 }
 
 // Quit when all windows are closed.

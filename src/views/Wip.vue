@@ -80,7 +80,7 @@
           "Task management",
           "Ability to save quick notes",
 					"Focus variant on input fields",
-					"Prompt confirmation before closing window",
+					"#Prompt confirmation before closing window",
         ]
       }
     },
