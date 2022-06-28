@@ -17,7 +17,7 @@ export default {
     setMenus({ commit }){
       let menu = [];
 
-      db.all("SELECT * FROM menus WHERE name NOT IN ('query', 'tasks')", [], (err, rows) => {
+      db.all("SELECT * FROM menus WHERE name NOT IN ('query')", [], (err, rows) => {
         if(err) return console.log(err.message);
         rows.forEach((row) => {
           menu.push(row);

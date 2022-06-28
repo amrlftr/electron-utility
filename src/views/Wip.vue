@@ -81,6 +81,7 @@
           "Ability to save quick notes",
 					"Focus variant on input fields",
 					"#Prompt confirmation before closing window",
+					"Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
         ]
       }
     },

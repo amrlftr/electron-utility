@@ -7,13 +7,14 @@
     </transition>
 
     <div v-show="isOpen" class="fixed z-10 inset-0 overflow-y-auto">
-      <div class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+      <div :class="[{ 'items-end': mode !== 'full' }] " class="flex sm:justify-center min-h-full p-4 text-center sm:p-0">
+<!--				flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0-->
         <transition enter-active-class="transition ease-out duration-300"
           enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
           leave-active-class="transition ease-in duration-200" leave-from-class="transform opacity-100 scale-100"
           leave-to-class="transform opacity-0 scale-95">
           <div v-show="isOpen"
-            :class="[ width, 'relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-y-auto shadow-xl transform transition-all w-full my-auto sm:p-6' ]">
+            :class="[ width, mode === 'full' ? 'my-6' : 'my-auto', 'relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-y-auto shadow-xl transform transition-all w-full sm:p-6' ]">
             <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
               <button @click="isOpen = false" type="button"
                 class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -28,7 +29,7 @@
 
             <div>
               <div v-if="hasIconSlot"
-                class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                class="mx-auto flex items-center justify-center pb-4">
                 <!-- Heroicon name: outline/check -->
                 <slot name="icon"></slot>
               </div>
@@ -62,7 +63,11 @@ export default {
     width: {
       type: String,
       default: 'sm:max-w-sm'
-    }
+    },
+		mode: {
+			type: String,
+			default: 'normal',
+		}
   },
   data() {
     return {
@@ -75,7 +80,7 @@ export default {
     },
     hide() {
       this.isOpen = false;
-    }
+    },
   },
   computed: {
     hasIconSlot() {

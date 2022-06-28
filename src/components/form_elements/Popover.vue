@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import {debounce} from "lodash";
+
 export default {
 	props: {
 		title: {
@@ -75,8 +77,11 @@ export default {
 			this.isShow = false;
 		}
 	},
-	mounted() {
-		// console.log(this.value)
+	watch: {
+		value: function (val) {
+			if(val)
+				this.selectedOption = this.options.find(option => option.id === val);
+		}
 	},
 	computed: {
 		hasIconSlot() {

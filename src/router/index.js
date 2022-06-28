@@ -39,6 +39,11 @@ const routes = [
     component: () => import('../views/Tasks.vue')
   },
   {
+    path: '/tasks-archived',
+    name: 'tasks-archived',
+    component: () => import('../views/TasksArchived.vue')
+  },
+  {
     path: '/wip',
     name: 'Wip',
     component: () => import('../views/Wip.vue')

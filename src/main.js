@@ -5,6 +5,7 @@ import VueTippy, { TippyComponent } from "vue-tippy";
 import "tippy.js/themes/light.css";
 import store from './store';
 import db from './datastore';
+import VCalendar from 'v-calendar';
 
 Vue.prototype.$db = db;
 
@@ -17,8 +18,11 @@ new Vue({
 }).$mount('#app')
 
 Vue.use(VueTippy);
-
 Vue.component("tippy", TippyComponent);
+
+Vue.use(VCalendar, {
+  componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
+});
 
 Vue.mixin({
   mounted() {

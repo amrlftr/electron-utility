@@ -9,7 +9,7 @@
 				<span class="highlight px-2 whitespace-nowrap">{{ title }}</span>
 			</h1>
 			<div class="hidden sm:flex w-full bg-gray-300 h-px dark:bg-gray-700 mx-4"></div>
-			<div>
+			<div class="flex items-center space-x-2">
 				<slot name="rightOptions"></slot>
 			</div>
 		</div>
