@@ -23,7 +23,7 @@
 		
 		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-				<div @click="showTask(task)" v-for="(task, index) in tasks" :key="`task-${index}`" class="cursor-pointer bg-white overflow-hidden shadow rounded-2xl">
+				<div @click="showTask(task)" v-for="(task, index) in sortedTasks" :key="`task-${index}`" class="cursor-pointer bg-white overflow-hidden shadow rounded-2xl">
 					<div class="bg-gray-50 px-5 py-3">
 						<h3 class="text-gray-300 font-bold">#{{ task.id }}. <span class="text-gray-800">{{ task.title }}</span></h3>
 					</div>
@@ -31,7 +31,7 @@
 						<div class="grid grid-cols-2 gap-4">
 							<dl>
 								<dt class="text-sm font-semibold text-gray-400 truncate -mb-0.5">Status</dt>
-								<dd class="font-bold">{{ task.status }}</dd>
+								<dd class="font-bold uppercase text-sm tracking-wide mt-1.5" v-html="labelTaskStatus(task.status)"></dd>
 							</dl>
 							<dl>
 								<dt class="text-sm font-semibold text-gray-400 truncate">Priority</dt>
@@ -308,6 +308,20 @@ export default {
 		labelStatus(status){
 			return this.statusOptions.find(statusOption => statusOption.id === status).name;
 		},
+		labelTaskStatus(status){
+			let style = 'px-2 py-1 rounded-md';
+			
+			if (status === 'In Progress')
+				return `<span class="${ style } text-blue-500 bg-blue-100">${ status }</span>`;
+			
+			if (status === 'To Do')
+				return `<span class="${ style } text-gray-500 bg-gray-100">${ status }</span>`;
+			
+			if (status === 'In Review')
+				return `<span class="${ style } text-yellow-500 bg-yellow-100">${ status }</span>`;
+			
+			return status;
+		},
 		resetTask(){
 			this.clearObject(this.taskDetails);
 			this.taskDetails.due_date = dayjs().format('YYYY-MM-DD');
@@ -316,7 +330,7 @@ export default {
 			if(date)
 				return dayjs(date).format('DD/MM/YYYY') +
 					(dayjs(date).diff(dayjs(), 'days') <= 2
-						? "<span class='text-xs font-base text-red-400 ml-1'>(" + dayjs(date).fromNow() + ')</span>'
+						? "<span class='text-xs font-base text-red-400 ml-1'>(" + dayjs(date).add(1, 'day').fromNow() + ')</span>'
 						: '');
 			
 			return 'Not Set';
@@ -327,6 +341,17 @@ export default {
 		
 		dayjs.extend(relativeTime);
 	},
+	computed: {
+		sortedTasks(){
+			// eslint-disable-next-line vue/no-side-effects-in-computed-properties
+			return this.tasks.sort((a, b) => {
+				if (a.status === 'In Progress')
+					return -1;
+				
+				return 0;
+			})
+		}
+	}
 };
 </script>
 

@@ -18,13 +18,13 @@
 		
 		<div class="max-w-2xl mx-auto p-4 bg-white rounded-2xl border-2 border-gray-200">
 			<div class="space-y-4">
-				<accordion :title="note.title" v-for="(note, index) in notes" :key="index">
+				<accordion :collapse="false" :title="note.title" v-for="(note, index) in notes" :key="index">
 					<template #headerOptions>
 						<svg v-if="index !== 0" @click="deleteNote(index)" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 bg-red-200 p-1 rounded-full cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 						</svg>
 					</template>
-					<textarea rows="4" :value="note.content" class="appearance-none outline-none bg-transparent w-full"></textarea>
+					<textarea rows="4" v-model="note.content" class="appearance-none outline-none bg-transparent w-full"></textarea>
 				</accordion>
 			</div>
 		</div>

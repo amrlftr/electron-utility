@@ -31,9 +31,7 @@
 			<div class="divide-y-2 divide-gray-200">
 				<div v-for="(todo, index) in filteredTodos" :key="index" class="flex items-start justify-between py-2">
 					<span class="mr-4 font-bold">{{ (index+1).toString().length === 1 ? '0' + (index+1) : index+1 }}</span>
-					<div :class="{ 'line-through': todo.charAt(0) === '#' }" class="text-left font-bold w-full">
-						{{ todo.charAt(0) === '#' ? todo.substring(1) : todo }}
-					</div>
+					<div :class="{ 'line-through': todo.charAt(0) === '#' }" class="text-left font-bold w-full" v-html="labelTodo(todo)"></div>
 					<svg xmlns="http://www.w3.org/2000/svg" :class="[ todo.charAt(0) === '#' ? 'text-white bg-green-400' : 'text-gray-500 border border-gray-500' ]" class="h-5 w-5 ml-4 p-0.5 rounded-full" viewBox="0 0 20 20" fill="currentColor">
 						<path fill-rule="evenodd"
 									d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -82,9 +80,23 @@
 					"Focus variant on input fields",
 					"#Prompt confirmation before closing window",
 					"Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
+					"#[BUG] quick notes reset all notes content when adding new note",
         ]
       }
     },
+		methods: {
+			labelTodo(todo){
+				if(todo.charAt(0) !== '#'){
+					if(todo.includes((['[BUG]']))){
+						return `<span class="text-red-400 bg-red-200 px-2 rounded-md">BUG</span> ${ todo.substring(5) }`;
+					}
+					
+					return todo;
+				}
+				
+				return todo.substring(1);
+			}
+		},
     computed: {
       filteredTodos(){
         return JSON.parse(JSON.stringify(this.todos)).sort((a, b) => {

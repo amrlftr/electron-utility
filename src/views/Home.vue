@@ -2,7 +2,7 @@
 	<div class="space-y-4 bg-gray-100 min-h-screen">
 		<div class="max-w-2xl mx-auto py-4 sm:px-6 lg:max-w-5xl lg:px-8">
 			<h1 class="text-2xl font-bold text-center font-serif text-gray-700 py-4">Select any utility tool to begin...</h1>
-			<div class="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
+			<div class="my-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8 px-6 sm:px-0">
 				<router-link
 					v-for="(menu, index) in menus" :key="index" :to="`/${menu.name}`"
 				>
