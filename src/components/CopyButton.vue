@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import UtButton from './Button';
+import UtButton from '@/components/form_elements/Button';
 
 export default {
   props: {

@@ -8,25 +8,14 @@
 				:class="[ value ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500' ]"
 				aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
 			>
-				<!--
-					Heroicon name: solid/tag
-
-					Selected: "text-gray-300", Default: "text-gray-500"
-				-->
 				<slot name="icon"></slot>
-				<!-- Selected: "text-gray-900" -->
 				<span :class="{ 'ml-2': hasIconSlot }" class="truncate block"> {{ value ? selectedOption.name : placeholder }} </span>
 			</button>
 			
 			<transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0"
 									enter-to-class="opacity-100" leave-active-class="transition ease-in duration-100"
 									leave-from-class="opacity-100" leave-to-class="opacity-0">
-				<ul v-show="isShow" class="absolute left-0 z-10 mt-1 w-52 bg-white shadow max-h-56 rounded-lg py-3 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-0">
-					<!--
-						Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
-	
-						Highlighted: "bg-gray-100", Not Highlighted: "bg-white"
-					-->
+				<ul v-show="isShow" class="absolute left-0 z-20 mt-1 w-52 bg-white shadow max-h-56 rounded-lg py-3 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-0">
 					<li
 						v-for="(option, index) in options"
 						:key="`${option.id}-${index}`"
@@ -45,8 +34,6 @@
 </template>
 
 <script>
-import {debounce} from "lodash";
-
 export default {
 	props: {
 		title: {

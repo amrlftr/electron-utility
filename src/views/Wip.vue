@@ -81,6 +81,7 @@
 					"#Prompt confirmation before closing window",
 					"Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
 					"#[BUG] quick notes reset all notes content when adding new note",
+					"Remove and replace dayjs dependencies with vanilla js",
         ]
       }
     },

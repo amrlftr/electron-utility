@@ -15,7 +15,7 @@
           leave-to-class="transform opacity-0 scale-95">
           <div v-show="isOpen"
             :class="[ width, mode === 'full' ? 'my-6' : 'my-auto', 'relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-y-auto shadow-xl transform transition-all w-full sm:p-6' ]">
-            <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+            <div class="absolute top-0 right-0 pt-4 pr-4">
               <button @click="isOpen = false" type="button"
                 class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span class="sr-only">Close</span>

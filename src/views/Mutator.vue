@@ -139,7 +139,7 @@
   import Accordion from '@/components/Accordion.vue';
   import Toggle from '@/components/form_elements/Toggle.vue';
   import Modal from '@/components/Modal.vue';
-  import UtButton from '@/components/Button.vue';
+  import UtButton from '@/components/form_elements/Button';
 	import AppContent from '@/layouts/AppContent';
 
 	export default {

@@ -11,7 +11,7 @@
 			</router-link>
 		</template>
 		<template #rightOptions>
-			<svg @click="openAddTaskModal" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500 bg-green-200 p-2 rounded-full cursor-pointer" viewBox="0 0 20 20" fill="currentColor">
+			<svg @click="openFormAction" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500 bg-green-200 p-2 rounded-full cursor-pointer" viewBox="0 0 20 20" fill="currentColor">
 				<path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
 			</svg>
 			<router-link to="/tasks-archived">
@@ -22,7 +22,7 @@
 		</template>
 		
 		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+			<div v-show="!isFormActionMode" class="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
 				<div @click="showTask(task)" v-for="(task, index) in sortedTasks" :key="`task-${index}`" class="cursor-pointer bg-white overflow-hidden shadow rounded-2xl">
 					<div class="bg-gray-50 px-5 py-3">
 						<h3 class="text-gray-300 font-bold">#{{ task.id }}. <span class="text-gray-800">{{ task.title }}</span></h3>
@@ -56,51 +56,91 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<modal
-			ref="taskActionModal"
-			title="Add New Task"
-			width="sm:max-w-xl lg:max-w-2xl"
-			mode="full"
-		>
-			<div class="relative">
-				<div class="overflow-hidden">
-					<label for="title" class="sr-only">Title</label>
-					<input type="text" name="title" v-model="taskDetails.title" id="title" class="appearance-none outline-none block w-full border-0 pt-2.5 text-lg font-medium placeholder-gray-500 focus:ring-0" placeholder="Title">
-					<label for="description" class="sr-only">Description</label>
-					<textarea v-model="taskDetails.desc" rows="4" name="description" id="description" class="appearance-none outline-none block w-full border-0 py-0 resize-none placeholder-gray-500 focus:ring-0 sm:text-sm" placeholder="Write a description..."></textarea>
-					
-					<!-- Spacer element to match the height of the toolbar -->
-					<div aria-hidden="true">
-						<div class="py-2">
-							<div class="h-9"></div>
+
+			<div v-show="isFormActionMode" class="mx-auto pt-3 pb-16 px-4 sm:px-6 lg:max-w-7xl md:pt-5 md:pb-24 md:px-8 md:grid md:grid-cols-3 md:gap-x-8">
+				<div class="flex items-center md:col-span-3 pb-2">
+					<svg xmlns="http://www.w3.org/2000/svg" class="col-span-3 h-4 w-4 mr-2 text-gray-800" viewBox="0 0 20 20" fill="currentColor">
+						<path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+					</svg>
+					<span @click="isFormActionMode = false" class="cursor-pointer text-xs uppercase font-bold text-gray-800" style="letter-spacing: 0.15em;">BACK TO ALL</span>
+				</div>
+				<div class="md:col-span-2 md:border-r md:border-gray-200 md:pr-8">
+					<div contenteditable="true" @focusout="updateTitle"
+						class="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl bg-transparent appearance-none outline-none border-b border-gray-200 pb-1"
+					>{{ taskDetails.title }}</div>
+					<div class="py-10 lg:pt-6 lg:pb-16 lg:pr-8">
+						<div>
+							<div class="space-y-6">
+								<textarea 
+									ref="desc"
+									v-model="taskDetails.desc" 
+									class="appearance-none outline-none bg-transparent block w-full border-0 py-0 resize-none placeholder-gray-500 focus:ring-0 sm:text-sm" 
+									placeholder="Write a description..."
+								></textarea>
+							</div>
 						</div>
-						<div class="h-px"></div>
-						<div class="py-2">
-							<div class="py-px">
-								<div class="h-9"></div>
+
+						<div class="mt-10">
+							<div class="flex items-center justify-between">
+								<h3 class="text-lg font-bold text-gray-600">To Do List</h3>
+								<ut-button @click="$refs.addTodoModal.show()">Add To Do</ut-button>
+							</div>
+
+							<div class="mt-4">
+								<ul role="list" class="text-gray-500 space-y-2">
+									<div v-for="(todo, todoIndex) in taskDetails.todos" :key="`todo-${todoIndex}`" class="group flex items-start justify-between">
+										<div class="flex items-start">
+											<div class="w-4 mr-2 relative">
+												<input 
+													@click="checkTodo(todo)"
+													:id="`todo-${todoIndex}`" type="checkbox" :checked="todo.is_done"
+													class="appearance-none checked:bg-indigo-500 w-3.5 h-3.5 mt-1 rounded-sm ring-1 ring-gray-400 checked:ring-indigo-500 cursor-pointer"
+												>
+												<svg xmlns="http://www.w3.org/2000/svg" :class="{ 'invisible' : !todo.is_done }" class="absolute top-0 h-3.5 w-3.5 mt-1 text-white pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+													<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+												</svg>
+											</div>
+											<label :for="`todo-${todoIndex}`" :class="{ 'line-through': todo.is_done }" class="-mt-0.5 cursor-pointer">{{ todo.name }}</label>
+										</div>
+										<svg @click="deleteTodo(todo.id)" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rounded-full bg-red-100 p-0.5 text-red-500 cursor-pointer flex-shrink-0 ml-2 opacity-0 group-hover:opacity-100" viewBox="0 0 20 20" fill="currentColor">
+											<path fill-rule="evenodd"
+														d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+														clip-rule="evenodd" />
+										</svg>
+									</div>
+								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
-				
-				<div class="absolute bottom-0 inset-x-px">
-					<!-- Actions: These are just examples to demonstrate the concept, replace/wire these up however makes sense for your project. -->
-					<div class="flex flex-nowrap py-2 space-x-2">
-						<popover class="flex-shrink-0" v-model="taskDetails.status" placeholder="Status" :options="statusOptions">
-							<!--							<template #icon>-->
-							<!--								<svg class="text-gray-300 flex-shrink-0 h-5 w-5 sm:-ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">-->
-							<!--									<path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />-->
-							<!--								</svg>-->
-							<!--							</template>-->
-						</popover>
-						<popover class="flex-shrink-0" v-model="taskDetails.priority" placeholder="Priority" :options="priorityOptions">
-						</popover>
+
+				<!-- Options -->
+				<div class="mt-10 space-y-5">
+					<div>
+						<h3 class="text-sm text-gray-900 font-medium">Status</h3>
+
+						<fieldset class="mt-4">
+							<div class="flex items-center space-x-3">
+								<dropdown v-model="taskDetails.status" placeholder="Status" :options="statusOptions" />
+								<dropdown 
+									v-model="taskDetails.priority" 
+									placeholder="Priority" 
+									:options="priorityOptions"
+								>
+									<!-- <template #icon>
+										<svg class="text-gray-300 flex-shrink-0 h-5 w-5 sm:-ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+										</svg>
+									</template> -->
+								</dropdown>
+							</div>
+						</fieldset>
 					</div>
-					<div class="border-t border-gray-200 px-2 py-2 flex justify-between items-center space-x-3 sm:px-3">
-						<div class="flex items-center">
-							<h3 class="text-sm font-semibold mr-2">Due Date: </h3>
+
+					<div>
+						<h3 class="text-sm text-gray-900 font-medium">Due Date</h3>
+
+						<fieldset class="mt-4">
 							<vc-date-picker
 								class="inline-block h-full"
 								v-model="taskDetails.due_date"
@@ -135,16 +175,19 @@
 									</div>
 								</template>
 							</vc-date-picker>
-						</div>
-						<div class="flex-shrink-0">
-							<button @click="!taskDetails.id ? addTask() : editTask()" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-								{{ !taskDetails.id ? 'Create' : 'Update' }}
-							</button>
-						</div>
+						</fieldset>
 					</div>
+
+					<button 
+						@click="!taskDetails.id ? addTask() : editTask()"
+						type="button" 
+						class="mt-10 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+					>
+						{{ !taskDetails.id ? 'Create' : 'Update' }}
+					</button>
 				</div>
 			</div>
-		</modal>
+		</div>
 		
 		<modal
 			ref="deleteTaskModal"
@@ -160,26 +203,41 @@
 				</svg>
 			</template>
 		</modal>
+
+		<modal
+			ref="addTodoModal"
+			title="Add New Todo"
+			action-label="Save"
+			@action="addTodo"
+			cancel-label="Cancel"
+			@cancel="$refs.addTodoModal.hide()"
+		>
+			<input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full" v-model="newTodo">
+		</modal>
 	</app-content>
 </template>
 
 <script>
 import Modal from '@/components/Modal.vue';
 import AppContent from '@/layouts/AppContent';
-import Popover from '@/components/form_elements/Popover';
+import Dropdown from '@/components/form_elements/Dropdown';
 import helpers from "@/mixins/helpers";
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
+import autosize from 'autosize';
+import UtButton from '@/components/form_elements/Button';
 
 export default {
 	components: {
 		Modal,
 		AppContent,
-		Popover,
+		Dropdown,
+		UtButton,
 	},
 	mixins: [helpers],
 	data() {
 		return {
+			isFormActionMode: false,
 			tasks: [],
 			taskDetails: {
 				id: null,
@@ -188,6 +246,7 @@ export default {
 				status: '',
 				priority: '',
 				due_date: dayjs().format('YYYY-MM-DD'),
+				todos: []
 			},
 			statusOptions: [
 				{
@@ -240,6 +299,7 @@ export default {
 				'4': 'red',
 			},
 			deleteTaskId: null,
+			newTodo: '',
 		}
 	},
 	methods: {
@@ -256,13 +316,28 @@ export default {
 						status: row.status,
 						priority: row.priority,
 						due_date: row.due_date,
+						todos: [],
 					});
 				})
 			})
 		},
-		openAddTaskModal(){
+		fetchTodos(){
+			this.taskDetails.todos = [];
+
+			this.$db.all("SELECT * FROM task_todos WHERE task_id = ?", [this.taskDetails.id], (err, rows) => {
+				if (err) return console.log(err.message);
+				rows.forEach((row) => {
+					this.taskDetails.todos.push({
+						id: row.id,
+						name: row.name,
+						is_done: row.is_done
+					});
+				})
+			})
+		},
+		openFormAction(){
 			this.resetTask();
-			this.$refs.taskActionModal.show();
+			this.isFormActionMode = true;
 		},
 		openDeleteTaskModal(id){
 			this.deleteTaskId = id;
@@ -274,7 +349,7 @@ export default {
 				(err) => {
 					if (err) return console.log(err.message);
 					
-					this.$refs.taskActionModal.hide();
+					this.isFormActionMode = false;
 					this.resetTask();
 					this.fetchTasks();
 				})
@@ -285,25 +360,38 @@ export default {
 				(err) => {
 					if (err) return console.log(err.message);
 					
-					this.$refs.taskActionModal.hide();
+					this.isFormActionMode = false;
 					this.resetTask();
 					this.fetchTasks();
-				})
+				});
 		},
 		deleteTask(){
 			this.$db.run("DELETE FROM tasks WHERE id = ?",
 				[this.deleteTaskId],
 				(err) => {
 					if (err) return console.log(err.message);
+
+					this.$db.run("DELETE FROM task_todos WHERE task_id = ?",
+					[this.deleteTaskId],
+					(err) => {
+						if (err) return console.log(err.message);
+					});
 					
 					this.$refs.deleteTaskModal.hide();
 					this.deleteTaskId = null;
 					this.fetchTasks();
-				})
+				});
 		},
 		showTask(task){
 			this.taskDetails = JSON.parse(JSON.stringify(task));
-			this.$refs.taskActionModal.show();
+			this.isFormActionMode = true;
+
+			if(this.taskDetails.id)
+				this.fetchTodos();
+
+			this.$nextTick(() => {
+				autosize.update(this.$refs.desc);
+			})
 		},
 		labelStatus(status){
 			return this.statusOptions.find(statusOption => statusOption.id === status).name;
@@ -335,11 +423,45 @@ export default {
 			
 			return 'Not Set';
 		},
+		updateTitle(e){
+			this.taskDetails.title = e.target.textContent;
+		},
+		addTodo(){
+			this.$db.run("INSERT INTO task_todos (name, is_done, task_id) VALUES (?, ?, ?)",
+			[this.newTodo, '0', this.taskDetails.id],
+			(err) => {
+				if (err) return console.log(err.message);
+
+				this.newTodo = '';
+				this.$refs.addTodoModal.hide();
+				this.fetchTodos();
+			});
+		},
+		deleteTodo(id){
+			this.$db.run("DELETE FROM task_todos WHERE id = ?",
+			[id],
+			(err) => {
+				if (err) return console.log(err.message);
+
+				this.fetchTodos();
+			});
+		},
+		checkTodo(todo){
+			this.$db.run("UPDATE task_todos SET is_done = ? WHERE id = ?",
+			[+(!(todo.is_done === 1)), todo.id],
+			(err) => {
+				if (err) return console.log(err.message);
+
+				this.taskDetails.todos.find((curTodo) => curTodo.id === todo.id).is_done = +(!(todo.is_done === 1));
+			});
+		}
 	},
 	mounted() {
-		this.fetchTasks();
+		this.fetchTasks();	
 		
 		dayjs.extend(relativeTime);
+
+		autosize(this.$refs.desc);
 	},
 	computed: {
 		sortedTasks(){

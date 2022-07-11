@@ -19,7 +19,7 @@
 		</template>
 		
 		<div class="max-w-2xl mx-auto py-2 px-6">
-			<div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+			<div :class="{ 'ring-1 ring-black ring-opacity-5': tasks.length > 0}" class="overflow-hidden shadow  md:rounded-lg">
 				<table class="min-w-full divide-y divide-gray-300">
 					<tbody class="divide-y divide-gray-200 bg-white">
 					<tr v-for="(task, index) in tasks" :key="`task-${index}`">

@@ -35,7 +35,7 @@
 import AppContent from '@/layouts/AppContent';
 import CopyButton from '@/components/CopyButton.vue';
 import PasteButton from '@/components/PasteButton.vue';
-import UtButton from '@/components/Button.vue';
+import UtButton from '@/components/form_elements/Button';
 import Accordion from '@/components/Accordion.vue';
 
 export default {
