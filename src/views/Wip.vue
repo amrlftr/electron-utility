@@ -75,13 +75,17 @@
           "#order wip by incomplete first",
           "#debounce from watch to computed in mutator",
           "Toast notifications",
-          "Task management",
+          "#Task management",
           "Ability to save quick notes",
 					"Focus variant on input fields",
 					"#Prompt confirmation before closing window",
 					"Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
 					"#[BUG] quick notes reset all notes content when adding new note",
 					"Remove and replace dayjs dependencies with vanilla js",
+					"Export/import sqlite database",
+					"#[BUG] hide add to do when in create new mode (as there is no id to indicate as foreign key)",
+					"Auto update app feature",
+					"#Optional due date in task",
         ]
       }
     },

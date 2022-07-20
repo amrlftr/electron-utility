@@ -47,7 +47,7 @@
 						v-for="(type, index) in ['capitalize', 'titlecase', 'lowercase', 'reset']"
 						:key="index"
 						@click="type !== 'reset' ? caseType = type : caseType = ''"
-						:class="[caseType === type ? 'bg-blue-800 text-white' : 'text-gray-800']"
+						:class="[caseType === type ? 'bg-indigo-600 text-white font-semibold' : 'text-gray-800']"
 						class="px-2 py-1 text-center rounded-lg cursor-pointer font-medium capitalize"
 					>
 						{{ type }}

@@ -65,9 +65,12 @@
 					<span @click="isFormActionMode = false" class="cursor-pointer text-xs uppercase font-bold text-gray-800" style="letter-spacing: 0.15em;">BACK TO ALL</span>
 				</div>
 				<div class="md:col-span-2 md:border-r md:border-gray-200 md:pr-8">
-					<div contenteditable="true" @focusout="updateTitle"
-						class="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl bg-transparent appearance-none outline-none border-b border-gray-200 pb-1"
-					>{{ taskDetails.title }}</div>
+					<textarea 
+						ref="title"
+						v-model="taskDetails.title" 
+						class="appearance-none outline-none bg-transparent block w-full border-0 py-0 resize-none placeholder-gray-500 focus:ring-0 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl border-b border-gray-200" 
+						placeholder="Title"
+					></textarea>
 					<div class="py-10 lg:pt-6 lg:pb-16 lg:pr-8">
 						<div>
 							<div class="space-y-6">
@@ -81,7 +84,7 @@
 						</div>
 
 						<div class="mt-10">
-							<div class="flex items-center justify-between">
+							<div v-if="taskDetails.id !== null" class="flex items-center justify-between">
 								<h3 class="text-lg font-bold text-gray-600">To Do List</h3>
 								<ut-button @click="$refs.addTodoModal.show()">Add To Do</ut-button>
 							</div>
@@ -138,9 +141,9 @@
 					</div>
 
 					<div>
-						<h3 class="text-sm text-gray-900 font-medium">Due Date</h3>
+						<checkbox v-model="taskDetails.init_due_date" name="Due Date" class="ml-2" />
 
-						<fieldset class="mt-4">
+						<fieldset v-if="taskDetails.init_due_date" class="mt-4">
 							<vc-date-picker
 								class="inline-block h-full"
 								v-model="taskDetails.due_date"
@@ -226,6 +229,7 @@ import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import autosize from 'autosize';
 import UtButton from '@/components/form_elements/Button';
+import Checkbox from '@/components/form_elements/Checkbox';
 
 export default {
 	components: {
@@ -233,6 +237,7 @@ export default {
 		AppContent,
 		Dropdown,
 		UtButton,
+		Checkbox,
 	},
 	mixins: [helpers],
 	data() {
@@ -245,6 +250,7 @@ export default {
 				desc: '',
 				status: '',
 				priority: '',
+				init_due_date: null,
 				due_date: dayjs().format('YYYY-MM-DD'),
 				todos: []
 			},
@@ -315,6 +321,7 @@ export default {
 						desc: row.desc,
 						status: row.status,
 						priority: row.priority,
+						init_due_date: null,
 						due_date: row.due_date,
 						todos: [],
 					});
@@ -345,7 +352,10 @@ export default {
 		},
 		addTask(){
 			this.$db.run("INSERT INTO tasks (title, desc, status, priority, due_date) VALUES (?, ?, ?, ?, ?)",
-				[this.taskDetails.title, this.taskDetails.desc, this.taskDetails.status, this.taskDetails.priority, this.taskDetails.due_date],
+				[
+					this.taskDetails.title, this.taskDetails.desc, this.taskDetails.status, this.taskDetails.priority, 
+					this.taskDetails.init_due_date ? this.taskDetails.due_date : ''
+				],
 				(err) => {
 					if (err) return console.log(err.message);
 					
@@ -356,7 +366,10 @@ export default {
 		},
 		editTask(){
 			this.$db.run("UPDATE tasks SET title = ?, desc = ?, status = ?, priority = ?, due_date = ? WHERE id = ?",
-				[this.taskDetails.title, this.taskDetails.desc, this.taskDetails.status, this.taskDetails.priority, this.taskDetails.due_date, this.taskDetails.id],
+				[
+					this.taskDetails.title, this.taskDetails.desc, this.taskDetails.status, this.taskDetails.priority, 
+					this.taskDetails.init_due_date ? this.taskDetails.due_date : '', this.taskDetails.id
+				],
 				(err) => {
 					if (err) return console.log(err.message);
 					
@@ -384,12 +397,17 @@ export default {
 		},
 		showTask(task){
 			this.taskDetails = JSON.parse(JSON.stringify(task));
+			
+			if(this.taskDetails.due_date)
+				this.taskDetails.init_due_date = true;
+
 			this.isFormActionMode = true;
 
 			if(this.taskDetails.id)
 				this.fetchTodos();
 
 			this.$nextTick(() => {
+				autosize.update(this.$refs.title);
 				autosize.update(this.$refs.desc);
 			})
 		},
@@ -422,9 +440,6 @@ export default {
 						: '');
 			
 			return 'Not Set';
-		},
-		updateTitle(e){
-			this.taskDetails.title = e.target.textContent;
 		},
 		addTodo(){
 			this.$db.run("INSERT INTO task_todos (name, is_done, task_id) VALUES (?, ?, ?)",
@@ -461,6 +476,7 @@ export default {
 		
 		dayjs.extend(relativeTime);
 
+		autosize(this.$refs.title);
 		autosize(this.$refs.desc);
 	},
 	computed: {
