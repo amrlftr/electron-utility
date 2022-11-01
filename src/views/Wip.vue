@@ -86,6 +86,9 @@
 					"#[BUG] hide add to do when in create new mode (as there is no id to indicate as foreign key)",
 					"Auto update app feature",
 					"#Optional due date in task",
+					"Unique value in text manipulation should have some space so that it didn't stretch out",
+					"Count number of words while typing in text manipulation",
+					"JSON Formatter / Minify / Sorter",
         ]
       }
     },
