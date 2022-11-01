@@ -53,6 +53,11 @@ const routes = [
     name: 'Settings',
     component: () => import('../views/Settings.vue')
   },
+  {
+    path: '/daily-tracker',
+    name: 'Daily Tracker',
+    component: () => import('../views/DailyTracker.vue')
+  },
 ]
 
 const router = new VueRouter({

@@ -6,7 +6,7 @@
 				<router-link
 					v-for="(menu, index) in menus" :key="index" :to="`/${menu.name}`"
 				>
-					<div class="group shadow-lg rounded-2xl bg-white cursor-pointer">
+					<div class="group shadow-lg rounded-2xl bg-white cursor-pointer h-full">
 						<div class="px-4 py-5 sm:p-6 flex justify-between">
 							<div>
 								<h3 class="text-2xl leading-6 font-bold text-gray-700 font-serif pt-2">{{ menu.title }}</h3>
